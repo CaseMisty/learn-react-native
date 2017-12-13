@@ -3,7 +3,7 @@
 1. 什么是jsx? 新建一个组件的格式是什么?
 
 >jsx是一种在js中书写标签模板的写法.
-```
+```jsx
 const element = const element = (
   <h1>
     Hello, {formatName(user)}!
@@ -13,7 +13,7 @@ const element = const element = (
 
 >在jsx中使用js表达式使用大括号包裹
 
-```
+```jsx
 const element = (
   <h1 className="greeting">
     Hello, world!
@@ -45,7 +45,7 @@ class Welcome extends React.Component {
 1. function与class定义组件的区别?
 function中只能写render的部分
 class的写法,函数体移动到render函数中,this.props替换掉props
-```
+```jsx
 constructor (props) {
    super(props);
    // this.state = {};
@@ -53,7 +53,7 @@ constructor (props) {
 ```
 3. 使用setState时,如果要利用state中的值运算,要注意state是异步更新的,应使用
 
-```
+```jsx
 this.setState((prevState, props) => ({
     counter: prevState.counter + props.increment 
 }))
@@ -66,7 +66,7 @@ this.setState((prevState, props) => ({
 
 2. FlatList,设置data和renderItem
 
-```
+```jsx
 <FlatList
   data={[
     'Scroll me plz', 'If you like', 'Scrolling down', `What's the best`, 'Framework around?', 'React Native'
@@ -76,7 +76,7 @@ this.setState((prevState, props) => ({
 ```
 
 3. Fetch
-```
+```jsx
 // url (必须), options (可选)
 fetch('/some/url', {
     method: 'get'
@@ -122,7 +122,7 @@ var request = new Request('/users.json', {
 注意,在rn中,如果使用async,需要`responseJson = await response.json()`
 4. React中用不着v-if这种奇怪的属性来控制组件显示,直接使用if来选择不同的jsx,或者使用&&符号
 
-```
+```jsx
 <div>
     <h1>Hello!</h1>
     {unreadMessages.length > 0 &&
@@ -134,7 +134,7 @@ var request = new Request('/users.json', {
 ```
 5. 在render方法中`return null`来阻止渲染.
 6. [React表单](https://doc.react-china.org/docs/forms.html)
-```
+```jsx
 //constructor
 this.state = {value: ''};
 
@@ -148,7 +148,7 @@ handleChange(event) {
 
 #### 2017-12-13
 1.状态提升: 将子组件的数据/函数,以props的方式在父组件中定义并传递进去,子组件中尽量减少与夫组件耦合的细节保持抽象,这些属性方法的实现细节都通过参数传递.
-```
+```jsx
 // 小组件不需要state,所以也不需要用class定义
 function BoilingVerdict(props) {
   if (props.celsius >=100) {
