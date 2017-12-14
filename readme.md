@@ -1,4 +1,4 @@
-#### 2017-12-11
+## 2017-12-11
 
 1. 什么是jsx? 新建一个组件的格式是什么?
 
@@ -26,7 +26,7 @@ const element = React.createElement(
   'Hello, world!'
 );
 ```
-标签中的参数会被作为props对象中的属性.
+>标签中的参数会被作为props对象中的属性.
 
 新建一个组件的格式:
 
@@ -37,14 +37,14 @@ function Welcome(props) {
 // 或者
 class Welcome extends React.Component {
   render() {
-    return <h1>Hello, {this.props.name}</h1>;
+    return <h1>Hello, {this.props.name}</h1>
   }
 }
 ```
 
-1. function与class定义组件的区别?
-function中只能写render的部分
-class的写法,函数体移动到render函数中,this.props替换掉props
+2. function与class定义组件的区别?
+>function中只能写render的部分
+>class的写法,函数体移动到render函数中,this.props替换掉props
 ```jsx
 constructor (props) {
    super(props);
@@ -60,7 +60,7 @@ this.setState((prevState, props) => ({
 ```
 4. rn中使用flex无需在父元素声明display: flex.
 
-#### 2017-12-12
+## 2017-12-12
 
 1. 循环渲染组件时,直接在jsx中使用数组,需要为item加key
 
@@ -146,7 +146,7 @@ handleChange(event) {
 
 ```
 
-#### 2017-12-13
+## 2017-12-13
 1.状态提升: 将子组件的数据/函数,以props的方式在父组件中定义并传递进去,子组件中尽量减少与夫组件耦合的细节保持抽象,这些属性方法的实现细节都通过参数传递.
 ```jsx
 // 小组件不需要state,所以也不需要用class定义
@@ -235,6 +235,102 @@ class Calculator extends Component {
 }
 
 ```
+2. JSX
+JSX对象必须声明, 首字母必须大写. 传递属性时字符串常量与{''}表达式等价, 未给属性值传值时值默认为true.
+```jsx
+const props = {firstName: 'Ben', lastName: 'Hector'};
+return <Greeting {...props} />; // 有多个值要传时, 使用解构直接全部传递
+```
+类似<solt>, 任何处于jsx中间的标签/表达式/函数/HTML元素/JSX都可以作为props.children传递, 而false,null,undefined,true都会被忽略为空字符串
+
+3. [PropTypes](参数类型检查https://doc.react-china.org/docs/typechecking-with-proptypes.html)
+```jsx
+import PropTypes from 'prop-types';
+class Greeting extends React.Component {
+  render() {
+    return (
+      <h1>Hello, {this.props.name}</h1>
+    );
+  }
+}
+Greeting.propTypes = {
+  name: PropTypes.string // 一个简单的例子
+};
+```
+
+4. 下周安排
 周四周五看Redux
 下周要坑的笔记,看完,logindemo源码
 周四下午前写完5 三张图
+
+## 2017-12-14
+1. 创建store , 同时指定reducer， 同一个项目只有一个store， 为统一仓库， 有三个常用方法
+```js
+import { createStore } from 'redux';
+const store = createStore(fn);
+```
+2. 获取store的快照: `store.getState()`
+```js
+import {createStore} from 'redux';
+const store = createStore(reducer);
+// store的三个常用方法
+let { subscribe, dispatch, getState } = createStore(reducer);
+const state = store.getState();
+```
+3.View发出Action —— `store.dispatch()`
+```js
+/**
+ * { 一个action creater }
+ */
+function addTodo(text) {
+  const ADD_TODO = '添加 ToDo'
+  return {
+    type: ADD_TODO,
+    text
+  }
+}
+// View发出Action的唯一方法: store.dispatch
+store.dispatch(addTodo('learn Redux')
+```
+4. Reducer:为state onchange添加的listener —— `store.subscribe(reducer)`
+类似Array.prototype.reduce的第一个参数, 具体在[Redux 入门教程（上）](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
+
+5. 流程:
+
+用户发出Action
+```js
+store.dispatch(action);
+```
+
+store自动调用reducer, 返回新的state
+```js
+let nextState = todoApp(previousState, action);
+```
+
+state一旦发生变化,store就调用监听函数更新view
+```js
+store.subscribe(listener);
+```
+
+6. 困惑：以上这些api只是了解了用法，却难以直观体会到在何时用到，还是得在有相关需求时才能更深入理解。
+第二篇中间件虽是逐句看完了，却有很多地方只能理解大概，比如redux-promise中间件。
+```js
+import { createStore, applyMiddleware } from 'redux';
+import promiseMiddleware from 'redux-promise';
+import reducer from './reducers';
+
+const store = createStore(
+  reducer,
+  applyMiddleware(promiseMiddleware)
+); 
+const fetchPosts = 
+  (dispatch, postTitle) => new Promise(function (resolve, reject) {
+     dispatch(requestPosts(postTitle));
+     return fetch(`/some/API/${postTitle}.json`)
+       .then(response => {
+         type: 'FETCH_POSTS',
+         payload: response.json()
+       });
+});
+```
+以上这段代码中，并未查到关于独立使用dispatch方法的说明，也不明白为何要这么调用。
