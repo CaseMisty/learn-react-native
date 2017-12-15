@@ -1,7 +1,6 @@
 ## 2017-12-11
 
-1. 什么是jsx? 新建一个组件的格式是什么?
-
+1. 什么是jsx? 新建一个组件的格式是怎样?
 >jsx是一种在js中书写标签模板的写法.
 ```jsx
 const element = const element = (
@@ -12,10 +11,9 @@ const element = const element = (
 ```
 
 >在jsx中使用js表达式使用大括号包裹
-
 ```jsx
 const element = (
-  <h1 className="greeting">
+  <h1 className="greetinga">
     Hello, world!
   </h1>
 );
@@ -29,7 +27,6 @@ const element = React.createElement(
 >标签中的参数会被作为props对象中的属性.
 
 新建一个组件的格式:
-
 ```js
 function Welcome(props) {
   return <h1>Hello, {props.name}</h1>;
@@ -42,7 +39,7 @@ class Welcome extends React.Component {
 }
 ```
 
-2. function与class定义组件的区别?
+2. function与class定义组件的区别？
 >function中只能写render的部分
 >class的写法,函数体移动到render函数中,this.props替换掉props
 ```jsx
@@ -52,7 +49,6 @@ constructor (props) {
 }
 ```
 3. 使用setState时,如果要利用state中的值运算,要注意state是异步更新的,应使用
-
 ```jsx
 this.setState((prevState, props) => ({
     counter: prevState.counter + props.increment 
@@ -65,13 +61,12 @@ this.setState((prevState, props) => ({
 1. 循环渲染组件时,直接在jsx中使用数组,需要为item加key
 
 2. FlatList,设置data和renderItem
-
 ```jsx
 <FlatList
   data={[
     'Scroll me plz', 'If you like', 'Scrolling down', `What's the best`, 'Framework around?', 'React Native'
   ]}
-  renderItem={(item)=><Kuai text={item}/>}
+  renderItem={({item})=><Kuai text={item}/>}
 />
 ```
 
@@ -120,6 +115,7 @@ var request = new Request('/users.json', {
 });
 ```
 注意,在rn中,如果使用async,需要`responseJson = await response.json()`
+
 4. React中用不着v-if这种奇怪的属性来控制组件显示,直接使用if来选择不同的jsx,或者使用&&符号
 
 ```jsx
@@ -333,4 +329,72 @@ const fetchPosts =
        });
 });
 ```
-以上这段代码中，并未查到关于独立使用dispatch方法的说明，也不明白为何要这么调用。
+
+## 2017-12-15
+### [React-Redux基础](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html#comment-377237)
+1. React-Redux组件分为两类： UI组件和容器组件， UI只用this.props负责展示， 容器只负责逻辑.
+1. 使用concat方法，从UI组件生成容器组件
+```js
+import { connect } from 'react-redux'
+
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
+```
+3. mapStateToProps()
+用于建立从state对象到props对象的映射关系。
+>`mapStateToProps()`建立从`state`对象到`props`对象的映射关系，返回一个对象。
+
+>`mapStateToProps`会订阅 `Store`，每当`state`更新的时候，就会自动执行，重新计算 UI 组件的参数，从而触发 UI 组件的重新渲染。
+
+>`mapStateToProps`的第一个参数总是`state`对象，还可以使用第二个参数，代表容器组件的`props`对象。
+
+使用ownProps作为参数后，如果容器组件的参数发生变化，也会引发 UI 组件重新渲染。
+connect方法可以省略mapStateToProps参数，那样的话，UI 组件就不会订阅Store，就是说 Store 的更新不会引起 UI 组件的更新。
+
+4. mapDispatchToProps
+定义哪些用户的操作应该当做Action映射到对应的`store.dispatch()`
+可以是一个函数或对象
+当它是函数时，会得到两个参数：`dispatch`和`ownProps`
+当它是对象时，他的每个key-name是对应UI组件的同名参数，key-value应该是一个函数，作为Action Creater，返回的Action会由Redux自动发出
+
+5. 使用顺序总结
+* 首先创建一个纯UI组件，其中包含需要从`state`计算得到的值，以及需要发出Action的操作
+* 定义mapStateToProps(state)  建立到`state`的映射
+```js
+function mapStateToProps(state) {
+  return {
+    value: state.count
+  }
+}
+```
+* 定义mapDispatchToProps(dispatch)  建立到`dispatch`的映射
+```js
+function mapDispatchToProps(dispatch) {
+  return {
+    onIncreaseClick: () => dispatch(increaseAction)
+  }
+}
+const increaseAction = { type: 'increase' }
+```
+* 调用connect生成容器
+```js
+const App = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Counter)
+```
+* 定义Reducer
+```js
+function counter(state = { count: 0 }, action) {
+  const count = state.count
+  switch (action.type) {
+    case 'increase':
+      return { count: count + 1 }
+    default:
+      return state
+  }
+}
+```
+* 使用中间件，生成store，使用Provider
