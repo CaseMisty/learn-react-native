@@ -1,0 +1,53 @@
+相关文档 http://reactnative.cn/docs/0.50/getting-started.html#content
+
+1.安装chocolatey
+
+2.安装python2（不支持python3以上版本）
+-- choco install python2
+
+3.
+-- npm config set registry https://registry.npm.taobao.org --global
+-- npm config set disturl https://npm.taobao.org/dist --global
+（加速安装yarn 和 react-native-cli，可选）
+
+4.安装Java Development Kit [JDK] 1.8或更高版本
+-- choco install jdk8
+使用
+-- javac -version
+检测版本
+
+5.安装react-native
+-- npm install -g react-native-cli
+
+6.创建项目
+-- react-native init MyProject
+
+7.安装Android Studio（注意官网提示所需的依赖和组件，尤其是Android SDK和Android Device Emulator。）
+
+8.配置环境变量adb
+参考 https://jingyan.baidu.com/article/09ea3ede1b4df6c0aede39ab.html
+
+9.下载模拟器（示例：夜神。然后模拟器链接到adb，参考 http://blog.csdn.net/mazaiting/article/details/72673166）
+连接完成后，运行
+-- adb devices
+查看是否能查询到设备
+
+10.运行项目
+-- react-native run-android
+
+11.虚拟设备提示红字error
+然后摇晃设备（虚拟的晃屏）
+点击 dev settings > debug server host for device
+键入 自己的ip + :8081
+返回再晃屏，选择 reload js
+至此项目完整运行。
+
+
+12.谷歌访问  http://localhost:8081/debugger-ui  晃屏选择debug js即可调试
+
+
+
+
+
+
+
